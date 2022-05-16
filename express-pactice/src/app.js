@@ -6,6 +6,8 @@ const mysql = require("mysql2");
 
 const db = require("../models/index");
 
+const { userValidation } = require("./validation");
+
 const cors = require("cors");
 
 const PORT = 3000;
@@ -38,8 +40,15 @@ app.get("/users", (req, res) => {
 });
 
 app.post("/users",async (req, res, next) => {
-  console.log(req.body);
-  res.sendStatus(201);
+  const {error} = userValidation(req.body);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  } else {
+    console.log('Data is being saved to express db');
+    res.status(200).json({message: "data is saved"});
+  };
+ 
   users.push(req.body);
 
   await db.User.create(req.body)
