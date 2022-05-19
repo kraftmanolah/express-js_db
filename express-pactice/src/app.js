@@ -9,6 +9,8 @@ const db = require("../models/index");
 const { userValidation } = require("./validation");
 
 const cors = require("cors");
+const { sequelize } = require("../models/index");
+const { response } = require("express");
 
 const PORT = 3000;
 
@@ -19,12 +21,13 @@ app.listen(PORT, async () => {
   await db.sequelize.sync({ alter: true });
   console.log(`Express server running on port ${PORT}!`);
 });
-
+/*
 const users = [
   { name: "Benzo", age: 22 },
   { name: "Lala", age: 55 },
   { name: "Robo", age: 43 },
 ];
+*/
 
 const posts = [{ title: "My favorite food" }, { sub: "Love life" }];
 
@@ -36,8 +39,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users", (req, res) => {
-  res.send(users);
+  User.findAll('SELECT * FROM users', (error, result, fields) => {
+    if (error) throw error;
+
+    response.send(result);
+  })
 });
+  
 
 app.post("/users",async (req, res, next) => {
   const {error} = userValidation(req.body);
