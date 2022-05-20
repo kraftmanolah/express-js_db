@@ -38,12 +38,11 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/users", (req, res) => {
-  User.findAll('SELECT * FROM users', (error, result, fields) => {
-    if (error) throw error;
+app.get("/users", async (req, res) => {
+  let users = await db.User.findAll();
 
-    response.send(result);
-  })
+  res.json(users);
+  
 });
   
 
@@ -68,10 +67,13 @@ app.post("/users",async (req, res, next) => {
     });
 });
 
-app.get("/users/:name", (req, res) => {
+app.get("/users/:name", async (req, res) => {
   const { name } = req.params;
-  const user = users.find((user) => user.name === name);
-  if (user) {
+  const user = await db.User.findOne({
+    where: { name: name}
+  });
+
+  if(user) {
     res.status(200).send(user);
   } else {
     res.status(404).send("Not found");

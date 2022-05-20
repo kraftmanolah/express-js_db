@@ -15,7 +15,7 @@
   "test": {
     "username": "root",
     "password": "Password12",
-    "database": "database_testb",
+    "database": "database_test",
     "host": "localhost",
     "dialect": "mysql"
   },
