@@ -12,7 +12,7 @@ const cors = require("cors");
 
 const { sequelize } = require("../models/index");
 const { response } = require("express");
-
+const { Op } = require("sequelize");
 
 const PORT = 3000;
 
@@ -63,7 +63,7 @@ app.post("/users", async (req, res, next) => {
 
   // After validation, Now we push
  
-  users.push(req.body);
+ // users.push(req.body);
 
   // We have successfully pushed, Now we create the data in our database
 
@@ -89,9 +89,9 @@ app.get("/users/:name", async (req, res) => {
   }
 });
 
-app.get("users/:age", async (req, res) => {
+app.get("/users/age/:age", async (req, res) => {
   const { age } = req.params;
-  const user = await db.User.findOne({
+  const user = await db.User.findAll({
     where: {
       age: {
         [Op.Ite]: age,
