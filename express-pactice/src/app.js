@@ -91,10 +91,11 @@ app.get("/users/:name", async (req, res) => {
 
 app.get("/users/age/:age", async (req, res) => {
   const { age } = req.params;
+
   const user = await db.User.findAll({
     where: {
       age: {
-        [Op.Ite]: age,
+        [Op.lte]: age,
       },
     },
   });
