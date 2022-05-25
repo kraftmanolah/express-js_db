@@ -9,8 +9,6 @@ const db = require("../models/index");
 const { userValidation } = require("./validation");
 
 const cors = require("cors");
-const { sequelize } = require("../models/index");
-const { response } = require("express");
 
 const PORT = 3000;
 
@@ -38,6 +36,8 @@ app.get("/", (req, res) => {
   });
 });
 
+// Now we get our users from our database
+
 app.get("/users", async (req, res) => {
   let users = await db.User.findAll();
 
@@ -45,6 +45,7 @@ app.get("/users", async (req, res) => {
   
 });
   
+//We are trying to validate the value of the data before posting it to our database
 
 app.post("/users",async (req, res, next) => {
   const {error} = userValidation(req.body);
@@ -55,8 +56,12 @@ app.post("/users",async (req, res, next) => {
     console.log('Data is being saved to express db');
     res.status(200).json({message: "data is saved"});
   };
+
+  // After validation, Now we push
  
   users.push(req.body);
+
+  // We have successfully pushed, Now we create the data in our database
 
   await db.User.create(req.body)
     .then(() => {
@@ -79,4 +84,28 @@ app.get("/users/:name", async (req, res) => {
     res.status(404).send("Not found");
   }
 });
+
+app.get("users/:age", async (req, res) => {
+  const { age } = req.params;
+  const user = await db.User.findOne({
+    where: {
+      age: {
+        [Op.Ite]: age,
+      },
+    },
+  });
+
+  if(user) {
+    res.status(200).send(user);
+  } else {
+    res.status(404).send("Not found");
+  }
+
+});
+
+
+
+
+
+
 app.post("users");
