@@ -10,6 +10,10 @@ const { userValidation } = require("./validation");
 
 const cors = require("cors");
 
+const { sequelize } = require("../models/index");
+const { response } = require("express");
+
+
 const PORT = 3000;
 
 app.use(cors());
@@ -47,7 +51,7 @@ app.get("/users", async (req, res) => {
   
 //We are trying to validate the value of the data before posting it to our database
 
-app.post("/users",async (req, res, next) => {
+app.post("/users", async (req, res, next) => {
   const {error} = userValidation(req.body);
 
   if (error) {
