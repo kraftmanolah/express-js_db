@@ -115,18 +115,23 @@ app.get("/users/id/:id", async (req, res) => {
   }
 });
 
-app.put('/users', async (req, res) => {
-  const usersId = req.params;
-  const { name , age, sex } = req.body;
+app.put('/users/:name', async (req, res) => {
+  const { name } = req.params;
+  const user = await db.User.findOne({
+    where: { name: name}
+  });
 
-  const uDate = await db.User.update({ name: name, age: age, sex: sex}, {
+  const { age, sex } = req.body;
+
+
+  await db.User.update({ age: age, sex: sex}, {
     where: {
-      users: usersId,
+      name: name,
     }
   });
 
-  if(uDate) {
-    res.status(200).send(uDate);
+  if(user) {
+    res.status(200).send(user);
   } else {
     res.status(404).send("Not found");
   }
